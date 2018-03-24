@@ -1,0 +1,16 @@
+{
+  "siteUrl": "https://example.com",
+  "siteName": "サイト名",
+  "rootUrl": "",
+  "description": "ディスクリプション",
+  "keywords": "キーワード1, キーワード2",
+  "faviconUrl": "",
+  "appleTouchIcon": "",
+  "iosStatusBar": "",
+  "ogpImgUrl": "",
+  "ogpType": "website",
+  "ogpLocale": "",
+  "facebookAppId": "",
+  "facebookAdmins": "",
+  "twitterId": ""
+}

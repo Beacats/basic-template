@@ -1,0 +1,65 @@
+block configBlock
+  - title = pageName ? [pageName, meta.siteName].join(" | ") : meta.siteName
+  - directoryPath = pagePath
+  - description = pageDescription
+  - keywords = pageKeywords
+  - ogpTitle = pageOgpTitle
+  - ogpImage = pageOgpImage
+  - ogpType = pageOgpType
+
+doctype html
+html(lang="ja")
+  head(prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# " + ogpType + ": http://ogp.me/ns/" + ogpType + "#")
+    //- ESSENTIALS
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="format-detection" content="telephone=no")
+    title=title
+    if meta.description
+      meta(name="description", content=(description ? description : meta.description))
+    if meta.keywords
+      meta(name="keywords", content=(keywords ? keywords : meta.keywords))
+    if meta.faviconUrl
+      link(rel="shortcut icon", href=meta.faviconUrl, type="image/vnd.microsoft.icon")
+      link(rel="icon", href=meta.faviconUrl, type="image/vnd.microsoft.icon")
+
+    //- for iOS
+    if meta.appleTouchIcon
+      meta(name="apple-mobile-web-app-capable", content="yes")
+      meta(name="apple-mobile-web-app-status-bar-style", content=meta.iosStatusBar || "default")
+      meta(name="apple-mobile-web-app-title", content=meta.siteName)
+      link(rel="apple-touch-icon", href=meta.appleTouchIcon)
+
+    //- OGP
+    //-if meta.rootUrl
+    meta(property="og:url", content=(meta.siteUrl + meta.rootUrl + pageAbsolutePath))
+    if meta.ogpImgUrl
+      meta(property="og:image", content=(ogpImage ? ogpImage : meta.ogpImgUrl))
+    meta(property="og:type", content=(ogpType ? ogpType : meta.ogpType))
+    meta(property="og:title", content=(ogpTitle ? ogpTitle : title))
+    meta(property="og:siteName", content=meta.siteName)
+    meta(property="og:description", content=(description ? description : meta.description))
+    meta(property="og:locale", content=meta.ogpLocale || "ja_JP")
+
+    //- Facebook
+    if meta.facebookAppId
+      meta(property="fb:app_id", content=meta.facebookAppId)
+    else if meta.facebookAdmins
+      meta(property="fb:admins" content=meta.facebookAdmins)
+
+    //- Twitter
+    meta(property="twitter:card", content=(meta.ogpImgUrl ? "summary_large_image" : "summary"))
+    if meta.twitterId
+      meta(property="twitter:site", content=meta.twitterId)
+
+    //- CSS
+    link(rel="stylesheet", href=directoryPath + "css/style.css")
+
+    //- CANONICAL
+    link(rel="canonical" href=(meta.siteUrl + meta.rootUrl + pageAbsolutePath))
+
+  body
+    block contentBlock
+    script(src=directoryPath + "js/lib.js")
+    script(src=directoryPath + "js/script.js")

@@ -1,0 +1,26 @@
+//- 基本レイアウト情報呼び出し
+extend layout/_common
+
+//- 変数宣言
+prepend configBlock
+  - pageName = ""
+  - pagePath = "./"
+  //- 任意
+  - pageDescription="";
+  - pageKeywords="";
+  - pageOgpTitle="";
+  - pageOgpImage="";
+  - pageOgpType="website";
+
+block contentBlock
+  //- 共通header呼び出し
+  include layout/_header
+
+  //- mainコンテンツ
+  main.main.top-page
+
+  //- 共通footer呼び出し
+  include layout/_footer
+
+
+

@@ -1,0 +1,15 @@
+// reset css
+@import "vendor/sanitize";
+// components
+@import "components/variable";
+@import "components/media";
+@import "components/mixin";
+@import "components/extend";
+@import "components/common";
+@import "components/keyframes";
+// vendor
+// common
+@import 'common/header';
+@import 'common/main';
+@import 'common/footer';
+// page
