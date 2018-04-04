@@ -59,7 +59,7 @@ html(lang="ja")
     //- CANONICAL
     link(rel="canonical" href=(meta.siteUrl + meta.rootUrl + pageAbsolutePath))
 
-  body
+  body(class=pageBodyClass)
     block contentBlock
     script(src=directoryPath + "js/lib.js")
     script(src=directoryPath + "js/script.js")

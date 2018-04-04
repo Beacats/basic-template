@@ -48,12 +48,13 @@ gulp.task('html', function () {
   return gulp.src(src.pug)
     .pipe(plumber())
     .pipe(data(function (file) {
-      // 各ページのルート相対パスを格納
-      locals.pageAbsolutePath = '/' + path.relative(file.base, file.path.replace(/.pug$/, '.html')).replace(/index\.html$/, '');
+      locals.pageAbsolutePath = '/' + path.relative(file.base, file.path.replace(/.pug$/, '.html')).replace(/index\.html$/, ''); // 各ページのルート相対パスを格納
+      locals.pageAbsolutePath = locals.pageAbsolutePath.replace(/\\/g, '/'); // 「\」を「/」に置換
       return locals;
     }))
     .pipe(pug({
       locals: locals, // localsに渡したデータをPugファイルで取得
+      //basedir: 'src', // includeをルート相対パスで使用
       pretty: true
     }))
     .pipe(gulp.dest(dest.root))
@@ -127,6 +128,7 @@ gulp.task('build', function () {
 // ブラウザの自動更新
 gulp.task('browser-sync', function () {
   browsersync.init({
+    //host: '192.168.202.30', // 必要に応じてローカルIPアドレスを入力
     server: {
       baseDir: dest.root,
       index: "index.html"

@@ -1,5 +1,5 @@
 //- 基本レイアウト情報呼び出し
-extend layout/_common
+extend ./layout/_common
 
 //- 変数宣言
 prepend configBlock
@@ -11,16 +11,18 @@ prepend configBlock
   - pageOgpTitle="";
   - pageOgpImage="";
   - pageOgpType="website";
+  //- body用Class
+  - pageBodyClass="top-page"
 
 block contentBlock
   //- 共通header呼び出し
-  include layout/_header
+  include ./layout/_header
 
   //- mainコンテンツ
-  main.main.top-page
+  main.main
 
   //- 共通footer呼び出し
-  include layout/_footer
+  include ./layout/_footer
 
 
 

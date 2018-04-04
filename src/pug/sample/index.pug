@@ -11,13 +11,15 @@ prepend configBlock
   - pageOgpTitle="";
   - pageOgpImage="";
   - pageOgpType="article";
+  //- body用Class
+  - pageBodyClass="sample-page"
 
 block contentBlock
   //- 共通header呼び出し
   include ../layout/_header
 
   //- mainコンテンツ
-  main.main.sample-page
+  main.main
 
   //- 共通footer呼び出し
   include ../layout/_footer
