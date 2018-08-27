@@ -23,21 +23,21 @@ const runSequence = require('run-sequence');
 const rimraf = require('rimraf');
 
 var src = {
-  'root': './src',
-  'pug': ['./src/pug/**/*.pug', '!./src/pug/**/_*.pug'],
-  'watchpug': './src/pug/**/*.pug',
-  'json': './src/config/',
-  'scss': './src/scss/**/*scss',
-  'js': ['./src/js/**/*js', '!./src/js/vendor/**/*js'],
-  'image': './src/img/**/*.{png,jpg,gif,svg}',
-  'vendorjs': ['./src/js/vendor/jquery/**.js', './src/js/vendor/jquery-migrate/**.js', './src/js/vendor/**.js'],
+  'root': 'src',
+  'pug': ['src/pug/**/*.pug', '!src/pug/**/_*.pug'],
+  'watchpug': 'src/pug/**/*.pug',
+  'json': 'src/config/',
+  'scss': 'src/scss/**/*.scss',
+  'js': ['src/js/**/*.js', '!src/js/vendor/**/*.js'],
+  'image': 'src/img/**/*.{png,jpg,gif,svg}',
+  'vendorjs': ['src/js/vendor/jquery/**.js', 'src/js/vendor/jquery-migrate/**.js', 'src/js/vendor/**.js'],
 };
 
 var dest = {
-  'root': './htdocs',
-  'css': './htdocs/css',
-  'image': './htdocs/img/',
-  'js': './htdocs/js'
+  'root': 'htdocs/',
+  'css': 'htdocs/css/',
+  'image': 'htdocs/img/',
+  'js': 'htdocs/js/'
 };
 
 // pugのコンパイル
