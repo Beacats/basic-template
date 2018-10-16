@@ -18,7 +18,8 @@
     "gulp-uglify": "*",
     "run-sequence": "*",
     "gulp-data": "*",
-    "gulp-pug": "*"
+    "gulp-pug": "*",
+    "gulp-sass-glob": "*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

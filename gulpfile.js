@@ -8,7 +8,8 @@ const path = require('path');
 
 // css
 const sass = require('gulp-sass');
-const cleancss = require('gulp-clean-css');
+const sassGlob = require("gulp-sass-glob");
+const cleanCss = require('gulp-clean-css');
 const autoprefixer = require('gulp-autoprefixer');
 
 // js
@@ -16,7 +17,7 @@ const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
 
 // utility
-const browsersync = require('browser-sync').create();
+const browserSync = require('browser-sync').create();
 const sourcemaps = require('gulp-sourcemaps');
 const plumber = require('gulp-plumber');
 const runSequence = require('run-sequence');
@@ -27,10 +28,11 @@ var src = {
   'pug': ['src/pug/**/*.pug', '!src/pug/**/_*.pug'],
   'watchpug': 'src/pug/**/*.pug',
   'json': 'src/config/',
-  'scss': 'src/scss/**/*.scss',
+  'scss': ['src/scss/**/*.scss', '!src/scss/lib.scss', '!src/scss/vendor/**/*.scss'],
   'js': ['src/js/**/*.js', '!src/js/vendor/**/*.js'],
   'image': 'src/img/**/*.{png,jpg,gif,svg}',
-  'vendorjs': ['src/js/vendor/jquery/**.js', 'src/js/vendor/jquery-migrate/**.js', 'src/js/vendor/**.js'],
+  'vendorcss': ['src/scss/lib.scss', 'src/scss/vendor/**/*.scss'],
+  'vendorjs': ['src/js/vendor/jquery/**/*.js', 'src/js/vendor/jquery-migrate/**/*.js', 'src/js/vendor/**/*.js'],
 };
 
 var dest = {
@@ -58,7 +60,19 @@ gulp.task('html', function () {
       pretty: true
     }))
     .pipe(gulp.dest(dest.root))
-    .pipe(browsersync.reload({
+    .pipe(browserSync.reload({
+      stream: true
+    }));
+});
+
+// ライブラリ、プラグイン系cssの結合
+gulp.task('vendorcss', function () {
+  return gulp.src(src.vendorcss)
+    .pipe(plumber())
+    .pipe(sassGlob())
+    .pipe(sass())
+    .pipe(gulp.dest(dest.css))
+    .pipe(browserSync.reload({
       stream: true
     }));
 });
@@ -68,14 +82,15 @@ gulp.task('sass', function () {
   return gulp.src(src.scss)
     .pipe(plumber())
     .pipe(sourcemaps.init())
+    .pipe(sassGlob())
     .pipe(sass({
       outputStyle: 'expanded'
     }))
     .pipe(sourcemaps.write())
     .pipe(autoprefixer())
-    //.pipe(cleancss())
+    .pipe(cleanCss())
     .pipe(gulp.dest(dest.css))
-    .pipe(browsersync.reload({
+    .pipe(browserSync.reload({
       stream: true
     }));
 });
@@ -84,7 +99,7 @@ gulp.task('sass', function () {
 gulp.task('image', function () {
   return gulp.src(src.image)
     .pipe(gulp.dest(dest.image))
-    .pipe(browsersync.reload({
+    .pipe(browserSync.reload({
       stream: true
     }));
 });
@@ -96,7 +111,7 @@ gulp.task('vendorjs', function () {
     .pipe(concat('lib.js'))
     //.pipe(uglify())
     .pipe(gulp.dest(dest.js))
-    .pipe(browsersync.reload({
+    .pipe(browserSync.reload({
       stream: true
     }));
 });
@@ -108,7 +123,7 @@ gulp.task('js', function () {
     .pipe(concat('script.js'))
     .pipe(uglify())
     .pipe(gulp.dest(dest.js))
-    .pipe(browsersync.reload({
+    .pipe(browserSync.reload({
       stream: true
     }));
 });
@@ -121,13 +136,13 @@ gulp.task('clean:dest', function (cb) {
 // タスク処理
 gulp.task('build', function () {
   runSequence(
-    ['html', 'sass', 'image', 'js', 'vendorjs']
+    ['html', 'vendorcss', 'sass', 'image', 'vendorjs', 'js']
   );
 });
 
 // ブラウザの自動更新
 gulp.task('browser-sync', function () {
-  browsersync.init({
+  browserSync.init({
     //host: '192.168.202.30', // 必要に応じてローカルIPアドレスを入力
     server: {
       baseDir: dest.root,
@@ -140,10 +155,11 @@ gulp.task('browser-sync', function () {
 // ファイルの監視
 gulp.task('watch', ['build'], function () {
   gulp.watch(src.watchpug, ['html']);
+  gulp.watch(src.vendorcss, ['vendorcss']);
   gulp.watch(src.scss, ['sass']);
   gulp.watch(src.image, ['image']);
-  gulp.watch(src.js, ['js']);
   gulp.watch(src.vendorjs, ['vendorjs']);
+  gulp.watch(src.js, ['js']);
 });
 
 // gulpコマンドで実行
