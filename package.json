@@ -3,23 +3,27 @@
   "version": "1.0.0",
   "description": "basic-template",
   "main": "index.js",
-  "dependencies": {
-    "gulp": "*"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "autoprefixer": "*",
     "browser-sync": "*",
+    "css-declaration-sorter": "*",
+    "css-mqpacker": "*",
+    "cssnano": "*",
     "gulp": "*",
-    "gulp-autoprefixer": "*",
-    "gulp-clean-css": "*",
     "gulp-concat": "*",
+    "gulp-data": "*",
     "gulp-plumber": "*",
+    "gulp-postcss": "*",
+    "gulp-pug": "*",
     "gulp-sass": "*",
+    "gulp-sass-glob": "*",
     "gulp-sourcemaps": "*",
     "gulp-uglify": "*",
+    "postcss-reporter": "*",
     "run-sequence": "*",
-    "gulp-data": "*",
-    "gulp-pug": "*",
-    "gulp-sass-glob": "*"
+    "stylelint": "*",
+    "stylelint-config-standard": "*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

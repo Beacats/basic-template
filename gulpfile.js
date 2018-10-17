@@ -8,9 +8,14 @@ const path = require('path');
 
 // css
 const sass = require('gulp-sass');
-const sassGlob = require("gulp-sass-glob");
-const cleanCss = require('gulp-clean-css');
-const autoprefixer = require('gulp-autoprefixer');
+const sassGlob = require('gulp-sass-glob');
+const postcss = require('gulp-postcss');
+const autoprefixer = require('autoprefixer');
+const cssDeclarationSorter = require('css-declaration-sorter');
+const mqpacker = require('css-mqpacker');
+const cssnano = require('cssnano');
+const stylelint = require('stylelint');
+const postcssReporter = require('postcss-reporter');
 
 // js
 const uglify = require('gulp-uglify');
@@ -83,12 +88,28 @@ gulp.task('sass', function () {
     .pipe(plumber())
     .pipe(sourcemaps.init())
     .pipe(sassGlob())
+    .pipe(postcss([
+      stylelint(),
+      postcssReporter()
+    ]))
     .pipe(sass({
       outputStyle: 'expanded'
     }))
+    .pipe(postcss([
+      autoprefixer({
+        browsers: [
+          'last 2 versions'
+        ]
+      }),
+      cssDeclarationSorter({
+        order: 'smacss'
+      }),
+      mqpacker(),
+      cssnano({
+        autoprefixer: false
+      })
+    ]))
     .pipe(sourcemaps.write())
-    .pipe(autoprefixer())
-    .pipe(cleanCss())
     .pipe(gulp.dest(dest.css))
     .pipe(browserSync.reload({
       stream: true
