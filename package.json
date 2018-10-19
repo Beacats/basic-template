@@ -23,7 +23,8 @@
     "postcss-reporter": "*",
     "run-sequence": "*",
     "stylelint": "*",
-    "stylelint-config-standard": "*"
+    "stylelint-config-standard": "*",
+    "postcss-scss": "*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

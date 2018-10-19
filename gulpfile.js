@@ -16,6 +16,7 @@ const mqpacker = require('css-mqpacker');
 const cssnano = require('cssnano');
 const stylelint = require('stylelint');
 const postcssReporter = require('postcss-reporter');
+const postcssScss = require('postcss-scss');
 
 // js
 const uglify = require('gulp-uglify');
@@ -90,8 +91,8 @@ gulp.task('sass', function () {
     .pipe(sassGlob())
     .pipe(postcss([
       stylelint(),
-      postcssReporter()
-    ]))
+      postcssReporter({clearMessages: true})
+    ], {syntax: postcssScss}))
     .pipe(sass({
       outputStyle: 'expanded'
     }))
