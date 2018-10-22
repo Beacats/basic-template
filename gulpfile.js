@@ -75,8 +75,10 @@ gulp.task('html', function () {
 gulp.task('vendorcss', function () {
   return gulp.src(src.vendorcss)
     .pipe(plumber())
+    .pipe(sourcemaps.init())
     .pipe(sassGlob())
-    .pipe(sass())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(dest.css))
     .pipe(browserSync.reload({
       stream: true
@@ -95,7 +97,7 @@ gulp.task('sass', function () {
     ], {syntax: postcssScss}))
     .pipe(sass({
       outputStyle: 'expanded'
-    }))
+    }).on('error', sass.logError))
     .pipe(postcss([
       autoprefixer({
         browsers: [
@@ -110,7 +112,7 @@ gulp.task('sass', function () {
         autoprefixer: false
       })
     ]))
-    .pipe(sourcemaps.write())
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(dest.css))
     .pipe(browserSync.reload({
       stream: true
