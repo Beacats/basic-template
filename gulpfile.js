@@ -28,6 +28,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const plumber = require('gulp-plumber');
 const runSequence = require('run-sequence');
 const rimraf = require('rimraf');
+const connectSSI = require('connect-ssi');
 
 var src = {
   'root': 'src',
@@ -187,10 +188,14 @@ gulp.task('build', function () {
 // ブラウザの自動更新
 gulp.task('browser-sync', function () {
   browserSync.init({
-    //host: '192.168.202.30', // 必要に応じてローカルIPアドレスを入力
     server: {
       baseDir: dest.root,
-      index: "index.html"
+      middleware: [
+        connectSSI({
+          baseDir: dest.root,
+          ext: '.html'
+        })
+      ]
     },
     notify: false
   });
