@@ -28,17 +28,20 @@ const sourcemaps = require('gulp-sourcemaps');
 const plumber = require('gulp-plumber');
 const runSequence = require('run-sequence');
 const rimraf = require('rimraf');
+const connectSSI = require('connect-ssi');
 
 var src = {
   'root': 'src',
   'pug': ['src/pug/**/*.pug', '!src/pug/**/_*.pug'],
   'watchpug': 'src/pug/**/*.pug',
+  'html': 'public/**/*.html',
   'json': 'src/config/',
   'scss': ['src/scss/**/*.scss', '!src/scss/lib.scss', '!src/scss/vendor/**/*.scss'],
   'js': ['src/js/**/*.js', '!src/js/vendor/**/*.js'],
   'image': 'src/img/**/*.{png,jpg,gif,svg}',
   'vendorcss': ['src/scss/lib.scss', 'src/scss/vendor/**/*.scss'],
   'vendorjs': ['src/js/vendor/jquery/**/*.js', 'src/js/vendor/jquery-migrate/**/*.js', 'src/js/vendor/**/*.js'],
+  'public': 'public/**/*'
 };
 
 var dest = {
@@ -49,7 +52,7 @@ var dest = {
 };
 
 // pugのコンパイル
-gulp.task('html', function () {
+gulp.task('pug', function () {
   var locals = {
     'meta': JSON.parse(fs.readFileSync(src.json + 'meta.json'))
   };
@@ -71,7 +74,15 @@ gulp.task('html', function () {
     }));
 });
 
-// ライブラリ、プラグイン系cssの結合
+// プレーンHTMLファイルの監視
+gulp.task('html', function () {
+  return gulp.src(src.html)
+    .pipe(browserSync.reload({
+      stream: true
+    }));
+});
+
+// ライブラリ、プラグイン系css（scss）の結合
 gulp.task('vendorcss', function () {
   return gulp.src(src.vendorcss)
     .pipe(plumber())
@@ -93,8 +104,12 @@ gulp.task('sass', function () {
     .pipe(sassGlob())
     .pipe(postcss([
       stylelint(),
-      postcssReporter({clearMessages: true})
-    ], {syntax: postcssScss}))
+      postcssReporter({
+        clearMessages: true
+      })
+    ], {
+      syntax: postcssScss
+    }))
     .pipe(sass({
       outputStyle: 'expanded'
     }).on('error', sass.logError))
@@ -152,6 +167,12 @@ gulp.task('js', function () {
     }));
 });
 
+// public配下ファイルをrootに格納（gulpの処理はしない）
+gulp.task('public', function () {
+  return gulp.src(src.public)
+    .pipe(gulp.dest(dest.root))
+});
+
 // htdocsの削除
 gulp.task('clean:dest', function (cb) {
   return rimraf(dest.root, cb);
@@ -160,17 +181,21 @@ gulp.task('clean:dest', function (cb) {
 // タスク処理
 gulp.task('build', function () {
   runSequence(
-    ['html', 'vendorcss', 'sass', 'image', 'vendorjs', 'js']
+    ['html', 'public', 'pug', 'vendorcss', 'sass', 'image', 'vendorjs', 'js']
   );
 });
 
 // ブラウザの自動更新
 gulp.task('browser-sync', function () {
   browserSync.init({
-    //host: '192.168.202.30', // 必要に応じてローカルIPアドレスを入力
     server: {
       baseDir: dest.root,
-      index: "index.html"
+      middleware: [
+        connectSSI({
+          baseDir: dest.root,
+          ext: '.html'
+        })
+      ]
     },
     notify: false
   });
@@ -178,7 +203,9 @@ gulp.task('browser-sync', function () {
 
 // ファイルの監視
 gulp.task('watch', ['build'], function () {
-  gulp.watch(src.watchpug, ['html']);
+  gulp.watch(src.html, ['html']);
+  gulp.watch(src.public, ['public']);
+  gulp.watch(src.watchpug, ['pug']);
   gulp.watch(src.vendorcss, ['vendorcss']);
   gulp.watch(src.scss, ['sass']);
   gulp.watch(src.image, ['image']);
